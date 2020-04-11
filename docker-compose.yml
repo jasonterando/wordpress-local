@@ -5,7 +5,6 @@ services:
     build: 
       context: .
       dockerfile: ./setup/docker-db/Dockerfile
-    container_name: wp-db
     networks:
       - local
     volumes:
@@ -16,7 +15,6 @@ services:
       - MYSQL_ROOT_PASSWORD=insecure-12345
   db-admin:
     image: phpmyadmin/phpmyadmin
-    container_name: wp-db-admin
     depends_on:
       - db
     environment:
@@ -31,7 +29,6 @@ services:
       dockerfile: ./setup/docker-site/Dockerfile
     depends_on:
       - db
-    container_name: wp
     environment:
       XDEBUG_CONFIG: remote_enable=1 remote_host=host.docker.internal remote_port=9000 idekey=VSCODE remote_autostart=1
     networks:
