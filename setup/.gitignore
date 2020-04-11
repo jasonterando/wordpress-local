@@ -1,0 +1,6 @@
+!.gitignore
+!/*
+backup*
+domain.*
+restore*
+!restore.sh

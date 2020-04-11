@@ -1,0 +1,45 @@
+version: '3.1'
+
+services:
+  db:
+    build: 
+      context: .
+      dockerfile: ./setup/docker-db/Dockerfile
+    container_name: wp-db
+    networks:
+      - local
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./setup:/tmp/setup
+      - ./site:/tmp/wordpress
+    environment:
+      - MYSQL_ROOT_PASSWORD=insecure-12345
+  db-admin:
+    image: phpmyadmin/phpmyadmin
+    container_name: wp-db-admin
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+    networks:
+      - local
+    ports:
+      - "8080:80"
+  site:
+    build: 
+      context: .
+      dockerfile: ./setup/docker-site/Dockerfile
+    depends_on:
+      - db
+    container_name: wp
+    environment:
+      XDEBUG_CONFIG: remote_enable=1 remote_host=host.docker.internal remote_port=9000 idekey=VSCODE remote_autostart=1
+    networks:
+      - local
+    ports:
+      - "80:80"
+    volumes:
+      - ./site:/var/www/html/
+networks:
+  local:
+    driver: bridge
